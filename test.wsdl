@@ -1,0 +1,120 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+	xmlns:tns="http://ws.day01_ws.atguigu.com/"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+	xmlns:ns1="http://schemas.xmlsoap.org/soap/http"
+	name="HelloWSImplService" 
+	targetNamespace="http://ws.day01_ws.atguigu.com/">
+	<!-- 
+		types 
+			schema : 定义了一些标签结构
+	 -->
+	<wsdl:types>
+		<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			xmlns:tns="http://ws.day01_ws.atguigu.com/" elementFormDefault="unqualified"
+			targetNamespace="http://ws.day01_ws.atguigu.com/" version="1.0">
+			
+			<!-- 
+				//用于请求
+				<sayHello>
+					<arg0>string</arg0>
+				</sayHello>
+					<q0:sayHello>
+						<arg0>BB</arg0> 
+					</q0:sayHello>
+					
+				//用于响应
+				<sayHelloResponse>
+					<return>string</return>
+				</sayHelloResponse>
+					<ns2:sayHelloResponse">
+						<return>Hello BB</return> 
+					</ns2:sayHelloResponse>
+			 -->
+			
+			<xs:element name="sayHello" type="tns:sayHello" />
+			<xs:element name="sayHelloResponse" type="tns:sayHelloResponse" />
+			<xs:complexType name="sayHello">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="arg0" type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+			<xs:complexType name="sayHelloResponse">
+				<xs:sequence>
+					<xs:element minOccurs="0" name="return" type="xs:string" />
+				</xs:sequence>
+			</xs:complexType>
+		</xs:schema>
+	</wsdl:types>
+	
+	
+	<!-- 
+		message: 用来定义消息的结构   soap消息
+			part : 指定引用types中定义的标签片断
+	 -->
+	
+	<wsdl:message name="sayHelloResponse">
+		<wsdl:part element="tns:sayHelloResponse" name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="sayHello">
+		<wsdl:part element="tns:sayHello" name="parameters">
+		</wsdl:part>
+	</wsdl:message>
+	
+	
+	<!-- 
+		portType: 用来定义服务器端的SEI
+			operation : 用来指定SEI中的处理请求的方法
+				input : 指定客户端应用传过来的数据，　会引用上面的定义的＜message＞
+				output :　指定服务器端返回给客户端的数据，　会引用上面的定义的＜message＞
+	 -->
+	<wsdl:portType name="HelloWS">
+		<wsdl:operation name="sayHello">
+			<wsdl:input message="tns:sayHello" name="sayHello">
+			</wsdl:input>
+			<wsdl:output message="tns:sayHelloResponse" name="sayHelloResponse">
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:portType>
+	
+	<!-- 
+		binding : 用于定义SEI的实现类
+			type属性: 引用上面的<portType>
+			<soap:binding style="document"> : 绑定的数据是一个document(xml)
+			operation : 用来定义实现的方法
+				<soap:operation style="document" /> 传输的是document(xml)
+				input: 指定客户端应用传过来的数据
+					<soap:body use="literal" /> : 文本数据
+				output :　指定服务器端返回给客户端的数据
+					<soap:body use="literal" /> : 文本数据
+	 -->
+	
+	<wsdl:binding name="HelloWSImplServiceSoapBinding" type="tns:HelloWS">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="sayHello">
+			<soap:operation soapAction="" style="document" />
+			<wsdl:input name="sayHello">
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output name="sayHelloResponse">
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	
+	<!-- 
+		service : 一个webservice的容器
+			name属性: 它用一指定客户端容器类
+			port : 用来指定一个服务器端处理请求的入口(就SEI的实现)
+				binding属性: 引用上面定义的<binding>
+				address : 当前webservice的请求地址
+	 -->
+	<wsdl:service name="HelloWSImplService">
+		<wsdl:port binding="tns:HelloWSImplServiceSoapBinding" name="HelloWSImplPort">
+			<soap:address location="http://192.168.10.165:8888/day01_ws/hellows" />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>
